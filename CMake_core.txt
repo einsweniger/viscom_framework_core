@@ -1,4 +1,5 @@
 set(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually d on windows.")
+set(CMAKE_DEBUGSLAVE_POSTFIX "d" CACHE STRING "add a postfix, usually d on windows.")
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windows.")
 
 set(G3_SHARED_LIB OFF CACHE BOOL "Build shared library." FORCE)
@@ -38,11 +39,11 @@ if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Wall -Wno-unused-function -Wno-unused-parameter -Wextra -Wpedantic -std=c++1z")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++1z")
 
-  list(APPEND CORE_LIBS stdc++fs)
-
   # add compiler-options for AppleClang to ignore linker warnings from assimp on macOS
   if (CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
     add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
+  else()
+    list(APPEND CORE_LIBS stdc++fs)
   endif()
 elseif(MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /EHsc /MP /std:c++latest")
@@ -159,8 +160,8 @@ endif()
 macro(copy_core_lib_dlls APP_NAME)
     if (${TUIO_LIB})
         add_custom_command(TARGET ${APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-            ${PROJECT_BINARY_DIR}/extern/fwcore/extern/tuio/$<CONFIGURATION>/libTUIO$<$<CONFIG:Debug>:d>.dll ${PROJECT_BINARY_DIR})
-        install(FILES ${PROJECT_BINARY_DIR}/extern/fwcore/extern/tuio/$<CONFIGURATION>/libTUIO$<$<CONFIG:Debug>:d>.dll DESTINATION ${VISCOM_INSTALL_BASE_PATH}/${VISCOM_APP_NAME})
+            ${PROJECT_BINARY_DIR}/extern/fwcore/extern/tuio/$<CONFIGURATION>/libTUIO$<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugSlave>>:d>.dll ${PROJECT_BINARY_DIR})
+        install(FILES ${PROJECT_BINARY_DIR}/extern/fwcore/extern/tuio/$<CONFIGURATION>/libTUIO$<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugSlave>>:d>.dll DESTINATION ${VISCOM_INSTALL_BASE_PATH}/${VISCOM_APP_NAME})
     endif()
 endmacro()
 

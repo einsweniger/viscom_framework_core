@@ -11,10 +11,11 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#ifndef __APPLE_CC__
 #include <experimental/filesystem>
-#include <regex>
+#endif
 #include "core/ApplicationNodeInternal.h"
-#include "core/open_gl.h"
+#include <regex>
 
 namespace viscom {
 
@@ -202,12 +203,30 @@ namespace viscom {
      */
     GLuint Shader::compileShader(const std::string& filename, GLenum type, const std::string& strType)
     {
+#ifdef __APPLE_CC__
+        std::ifstream file(filename.c_str(), std::ifstream::in);
+        if (!file) {
+            LOG(WARNING) << "Could not load shader file!";
+            std::cerr << "Could not load shader file!";
+            throw std::runtime_error("Could not load shader file!");
+        }
+        std::string line;
+        std::stringstream content;
+        while (file.good()) {
+            std::getline(file, line);
+            content << line << std::endl;
+        }
+        file.close();
+        auto shaderText = content.str();
+#else
         unsigned int fileId{0};
         static std::vector<std::string> defines{};
         auto shaderText = LoadShaderFile(filename, defines, fileId, 0);
         std::ofstream shader_out(filename + ".gen");
         shader_out << shaderText;
         shader_out.close();
+#endif
+
         auto shader = glCreateShader(type);
         if (shader == 0) {
             LOG(WARNING) << "Could not create shader!";
@@ -240,6 +259,7 @@ namespace viscom {
         return shader;
     }
 
+#ifndef __APPLE_CC__
     /**
      * Loads a shader from file and recursively adds all includes.
      * taken from https://github.com/dasmysh/OGLFramework_uulm/blob/c4548e84d29bc16b53360f65227597530306c686/OGLFramework_uulm/gfx/glrenderer/Shader.cpp
@@ -268,13 +288,13 @@ namespace viscom {
             auto trimedLine = line;
             utils::trim(trimedLine);
 
-            static const std::regex re(R"(^[ ]*#[ ]*include[ ]+["<](.*)[">].*)");
+            static const std::regex re("^[ ]*#[ ]*include[ ]+[\"<](.*)[\">].*");
             std::smatch matches;
             if (std::regex_search(line, matches, re)) {
                 auto includeFile = currentPath + matches[1].str();
                 if (!filesystem::exists(includeFile)) {
-                    LOG(WARNING) << filename.c_str() << L"(" << lineCount << R"() : fatal error: cannot open include file ")"
-                               << includeFile.c_str() << R"(".)";
+                    LOG(WARNING) << filename.c_str() << L"(" << lineCount << ") : fatal error: cannot open include file \""
+                               << includeFile.c_str() << "\".";
                     throw std::runtime_error("Cannot open include file: " + includeFile);
                 }
                 content << "#line " << 1 << " " << nextFileId << std::endl;
@@ -299,5 +319,5 @@ namespace viscom {
         fileId = nextFileId;
         return content.str();
     }
-
+#endif
 }
