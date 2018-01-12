@@ -16,6 +16,7 @@
 #endif
 #include "core/ApplicationNodeInternal.h"
 #include <regex>
+#include "core/open_gl.h"
 
 namespace viscom {
 
