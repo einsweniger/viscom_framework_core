@@ -11,6 +11,7 @@
 #include "core/main.h"
 #include "Mesh.h"
 #include "core/gfx/GPUProgram.h"
+#include "core/open_gl.h"
 
 namespace viscom {
 

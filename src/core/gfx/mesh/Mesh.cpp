@@ -17,7 +17,7 @@
 #include <assimp/scene.h>
 #include <iostream>
 #ifndef __APPLE_CC__
-#include <filesystem>
+#include <experimental/filesystem>
 #include <fstream>
 #endif
 
