@@ -67,12 +67,12 @@ namespace viscom {
         glm::mat4 localTransform_;
         /** The nodes parent. */
         const SceneMeshNode* parent_;
+        /** The nodes local AABB. */
+        math::AABB3<float> aabb_;
         /** Bone index. */
         int boneIndex_;
         /** Node index. */
         unsigned int nodeIndex_;
-        /** The nodes local AABB. */
-        math::AABB3<float> aabb_;
         /** Bounding boxes for this nodes sub meshes. */
         std::vector<math::AABB3<float>> subMeshBoundingBoxes_;
         /** Flag if the bounding box is valid. */
