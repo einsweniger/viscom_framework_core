@@ -100,7 +100,6 @@ namespace viscom {
             BaseDrawFrame();
             BaseDraw2D();
             appNodeImpl_->PostDraw();
-            ImGui_ImplGlfwGL3_FinishAllFrames();
             glfwSwapBuffers(window_);
         }
 
@@ -110,6 +109,7 @@ namespace viscom {
     void ApplicationNodeInternal::BaseInitOpenGL()
     {
         appNodeImpl_ = std::make_unique<MasterNode>(this);
+        ImGui::CreateContext();
 
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
@@ -144,6 +144,7 @@ namespace viscom {
         camHelper_.SetLocalCoordMatrix(0, glbToLcMatrix);
 
         ImGui_ImplGlfwGL3_Init(window_, false);
+
 
         FullscreenQuad::InitializeStatic();
         appNodeImpl_->InitOpenGL();
@@ -186,18 +187,23 @@ namespace viscom {
 
     void ApplicationNodeInternal::BaseDraw2D()
     {
-        ImGui_ImplGlfwGL3_NewFrame(-GetViewportScreen(0).position_, GetViewportScreen(0).size_, GetViewportScaling(0), GetCurrentAppTime(), GetElapsedTime());
+        //ImGui_ImplGlfwGL3_NewFrame(-GetViewportScreen(0).position_, GetViewportScreen(0).size_, GetViewportScaling(0), GetCurrentAppTime(), GetElapsedTime());
+        ImGui_ImplGlfwGL3_NewFrame();
 
         appNodeImpl_->Draw2D(backBuffer_);
 
         backBuffer_.DrawToFBO([this]() {
             ImGui::Render();
+            ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
         });
     }
 
     void ApplicationNodeInternal::BaseCleanUp() const
     {
+
         ImGui_ImplGlfwGL3_Shutdown();
+//        ImGui::DestroyContext(imGuiContext_);
+        ImGui::DestroyContext();
         appNodeImpl_->CleanUp();
     }
 
@@ -257,7 +263,7 @@ namespace viscom {
             return;
         }
 
-        ImGui_ImplGlfwGL3_KeyCallback(key, scancode, action, mods);
+        ImGui_ImplGlfw_KeyCallback(window_, key, scancode, action, mods);
         if (ImGui::GetIO().WantCaptureKeyboard) return;
 
         appNodeImpl_->KeyboardCallback(key, scancode, action, mods);
@@ -265,7 +271,7 @@ namespace viscom {
 
     void ApplicationNodeInternal::BaseCharCallback(unsigned int character, int mods)
     {
-        ImGui_ImplGlfwGL3_CharCallback(character);
+        ImGui_ImplGlfw_CharCallback(window_,character);
         if (ImGui::GetIO().WantCaptureKeyboard) return;
 
         appNodeImpl_->CharCallback(character, mods);
@@ -273,7 +279,7 @@ namespace viscom {
 
     void ApplicationNodeInternal::BaseMouseButtonCallback(int button, int action)
     {
-        ImGui_ImplGlfwGL3_MouseButtonCallback(button, action, 0);
+        ImGui_ImplGlfw_MouseButtonCallback(window_,button, action, 0);
         if (ImGui::GetIO().WantCaptureMouse) return;
 
         appNodeImpl_->MouseButtonCallback(button, action);
@@ -287,7 +293,8 @@ namespace viscom {
         mousePositionNormalized_.x = (2.0f * mousePosition_.x - 1.0f);
         mousePositionNormalized_.y = -(2.0f * mousePosition_.y - 1.0f);
 
-        ImGui_ImplGlfwGL3_MousePositionCallback(mousePos.x, mousePos.y);
+
+        //ImGui_ImplGlfw_MousePositionCallback(mousePos.x, mousePos.y);
         if (ImGui::GetIO().WantCaptureMouse) return;
 
 
@@ -296,7 +303,7 @@ namespace viscom {
 
     void ApplicationNodeInternal::BaseMouseScrollCallback(double xoffset, double yoffset)
     {
-        ImGui_ImplGlfwGL3_ScrollCallback(xoffset, yoffset);
+        ImGui_ImplGlfw_ScrollCallback(window_,xoffset, yoffset);
         if (ImGui::GetIO().WantCaptureMouse) return;
 
         appNodeImpl_->MouseScrollCallback(xoffset, yoffset);

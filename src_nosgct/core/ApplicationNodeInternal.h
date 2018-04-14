@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <imgui.h>
+#include <imgui_internal.h>
 #include "core/main.h"
 #include "core/resources/GPUProgramManager.h"
 #include "core/resources/TextureManager.h"
@@ -128,5 +130,7 @@ namespace viscom {
         glm::vec2 mousePosition_;
         /** Holds the current normalized mouse position. */
         glm::vec2 mousePositionNormalized_;
+
+        ImGuiContext* imGuiContext_;
     };
 }
