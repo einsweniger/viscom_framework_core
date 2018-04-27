@@ -11,6 +11,7 @@
 #include "core/main.h"
 #include "core/open_gl_fwd.h"
 #include "core/resources/Resource.h"
+#include <experimental/filesystem>
 
 namespace viscom {
 
@@ -34,10 +35,12 @@ namespace viscom {
     /**
     * Helper class for loading an OpenGL texture from file.
     */
+    namespace fs = std::experimental::filesystem;
     class Texture final : public Resource
     {
     public:
         Texture(const std::string& texFilename, ApplicationNodeInternal* node, bool useSRGB = true);
+        Texture(const fs::path& texFilename, ApplicationNodeInternal* node, bool useSRGB = true);
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;
         Texture(Texture&&) noexcept;

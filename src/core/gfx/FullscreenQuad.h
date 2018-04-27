@@ -44,7 +44,7 @@ namespace viscom {
         static void InitializeStatic();
 
         void Draw() const;
-        const GPUProgram* GetGPUProgram() const { return gpuProgram_.get(); }
+        GPUProgram* GetGPUProgram() { return gpuProgram_.get(); }
 
     private:
         /** The static part of the FullscreenQuad. */

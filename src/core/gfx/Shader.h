@@ -10,7 +10,7 @@
 
 #include "core/main.h"
 #include "core/open_gl_fwd.h"
-
+#include <experimental/filesystem>
 namespace viscom {
 
     class ApplicationNodeInternal;
@@ -40,11 +40,16 @@ namespace viscom {
     /**
      * Wrapper class for shader loading.
      */
+    namespace fs = std::experimental::filesystem;
     class Shader final
     {
+
     public:
         Shader(const std::string& shaderFilename, const ApplicationNodeInternal* node);
         Shader(const std::string& shaderFilename, const ApplicationNodeInternal* node, const std::vector<std::string>& defines);
+        Shader(const fs::path& shaderPath, const ApplicationNodeInternal* node);
+        Shader(const fs::path& path, const ApplicationNodeInternal* node, const std::vector<std::string>& defines);
+
         Shader(const Shader& orig) = delete;
         Shader& operator=(const Shader&) = delete;
         Shader(Shader&& orig) noexcept;
@@ -55,6 +60,9 @@ namespace viscom {
         GLuint getShaderId() const noexcept { return shader_; }
         void resetShader(GLuint newShader);
         GLuint recompileShader() const;
+        static GLint getShaderiv(GLuint shader, GLenum pname);
+        std::string getFileName() const { return  filename_;}
+        GLenum getType() {return type_;}
 
     private:
         /** Holds the shader file name. */

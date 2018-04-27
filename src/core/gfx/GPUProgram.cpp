@@ -47,6 +47,20 @@ namespace viscom {
         program_ = linkNewProgram(programName_, shaders_, [](const std::unique_ptr<Shader>& shdr) noexcept { return shdr->getShaderId(); });
     }
 
+    GPUProgram::GPUProgram(std::string programName, ApplicationNodeInternal *node, std::vector<std::unique_ptr<Shader>> shaders) :
+        Resource(programName, node),
+        programName_(std::move(programName)),
+        shaderNames_{},
+        program_(0),
+        shaders_{std::move(shaders)},
+        defines_{ }
+        {
+            for (const auto& shader : shaders_) {
+                shaderNames_.emplace_back(shader->getFileName());
+                //shaders_.emplace_back(std::make_unique<Shader>(fs::path{shader->getFileName()}, node, defines_));
+            }
+            program_ = linkNewProgram(programName_, shaders_, [](const std::unique_ptr<Shader>& shdr) noexcept { return shdr->getShaderId(); });
+        }
     /**
      * Move-constructor.
      * @param rhs the object to move.
@@ -221,4 +235,6 @@ namespace viscom {
             if (shader != 0) glDeleteShader(shader);
         }
     }
+
+
 }

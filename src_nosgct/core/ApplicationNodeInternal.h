@@ -10,6 +10,7 @@
 
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <experimental/filesystem>
 #include "core/main.h"
 #include "core/resources/GPUProgramManager.h"
 #include "core/resources/TextureManager.h"
@@ -23,6 +24,7 @@ struct GLFWwindow;
 
 namespace viscom {
 
+    namespace fs = std::experimental::filesystem;
     class ApplicationNodeBase;
 
     class ApplicationNodeInternal : public viscom::tuio::TuioInputWrapper

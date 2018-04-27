@@ -106,6 +106,10 @@ namespace viscom {
         Shader{ shaderFilename, node, std::vector<std::string>{} }
     {
     }
+    Shader::Shader(const fs::path &shaderPath, const ApplicationNodeInternal *node) :
+            Shader{ shaderPath, node, std::vector<std::string>{} }
+    {
+    }
 
     Shader::Shader(const std::string& shaderFilename, const ApplicationNodeInternal* node, const std::vector<std::string>& defines) :
         filename_{ Resource::FindResourceLocation("shader/" + shaderFilename, node) },
@@ -134,6 +138,44 @@ namespace viscom {
             type_ = GL_COMPUTE_SHADER;
             strType_ = "compute";
         }
+        shader_ = compileShader(filename_, type_, strType_, defines_);
+    }
+
+    Shader::Shader(const fs::path& path, const ApplicationNodeInternal* node, const std::vector<std::string>& defines) :
+            filename_{ path.generic_string() },
+            shader_{ 0 },
+            type_{ GL_VERTEX_SHADER },
+            strType_{ "vertex" },
+            defines_{ defines }
+    {
+        if(!path.has_extension()) {
+            LOG(WARNING) << path << " has no extension!";
+            return;
+        }
+        auto ext = path.extension().generic_string();
+        if (".frag" == ext) {
+            type_ = GL_FRAGMENT_SHADER;
+            strType_ = "fragment";
+        }
+        else if (".geom" == ext) {
+            type_ = GL_GEOMETRY_SHADER;
+            strType_ = "geometry";
+        }
+        else if (".tesc" == ext) {
+            type_ = GL_TESS_CONTROL_SHADER;
+            strType_ = "tessellation control";
+        }
+        else if (".tese" == ext) {
+            type_ = GL_TESS_EVALUATION_SHADER;
+            strType_ = "tessellation evaluation";
+        }
+        else if (".comp" == ext) {
+            type_ = GL_COMPUTE_SHADER;
+            strType_ = "compute";
+        }
+        /*
+         *
+         */
         shader_ = compileShader(filename_, type_, strType_, defines_);
     }
 
@@ -252,11 +294,9 @@ namespace viscom {
         glShaderSource(shader, 1, &shaderTextArray, &shaderLength);
         glCompileShader(shader);
 
-        GLint status;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+        GLint status = getShaderiv(shader, GL_COMPILE_STATUS);
         if (status == GL_FALSE) {
-            GLint infoLogLength;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+            GLint infoLogLength = getShaderiv(shader, GL_INFO_LOG_LENGTH);
 
             std::string strInfoLog;
             strInfoLog.resize(static_cast<std::size_t>(infoLogLength + 1));
@@ -330,5 +370,21 @@ namespace viscom {
         fileId = nextFileId;
         return content.str();
     }
+
+    /*
+     * If pname is SHADER_TYPE , one of the values from table 7.1 corresponding to the type of shader is returned.
+     * If pname is DELETE_STATUS , TRUE is returned if the shader has been flagged for deletion and FALSE is returned otherwise.
+     * If pname is COMPILE_STATUS , TRUE is returned if the shader was last compiled or specialized successfully, and FALSE is returned otherwise.
+     * If pname is INFO_LOG_LENGTH , the length of the info log, including a null terminator, is returned. If there is an empty info log, zero is returned.
+     * If pname is SHADER_SOURCE_LENGTH , the length of the concatenation of the source strings making up the shader source, including a null terminator, is returned. If no source has been defined, zero is returned.
+     * If pname is SPIR_V_BINARY , TRUE is returned if the shader has been successfully associated with a SPIR-V binary module by the ShaderBinary command,and FALSE is returned otherwise.
+     */
+    GLint Shader::getShaderiv(GLuint shader, GLenum pname) {
+        GLint params;
+        glGetShaderiv(shader, pname, &params);
+        return params;
+    }
+
+
 #endif
 }

@@ -369,4 +369,5 @@ namespace viscom {
     {
         return std::make_unique<FullscreenQuad>(fragmentShader, this);
     }
+
 }

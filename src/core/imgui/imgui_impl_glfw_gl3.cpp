@@ -29,7 +29,7 @@
 //  2017-09-01: OpenGL: Save and restore current bound sampler. Save and restore current polygon mode.
 //  2017-08-25: Inputs: MousePos set to -FLT_MAX,-FLT_MAX when mouse is unavailable/missing (instead of -1,-1).
 //  2017-05-01: OpenGL: Fixed save and restore of current blend function state.
-//  2016-10-15: Misc: Added a void* user_data parameter to Clipboard function handlers.
+//  2016-10-15: Misc: Added a void* user_data parameter to Clipboard function handler_fns.
 //  2016-09-05: OpenGL: Fixed save and restore of current scissor rectangle.
 //  2016-04-30: OpenGL: Fixed save and restore of current GL_ACTIVE_TEXTURE.
 

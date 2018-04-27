@@ -45,10 +45,33 @@ namespace viscom {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    /**
-     *  Move-constructor.
-     *  @param rhs the object to copy.
-     */
+    Texture::Texture(const fs::path &texFilename, ApplicationNodeInternal *node, bool useSRGB) :
+            Resource(texFilename, node),
+            textureId_{ 0 },
+            descriptor_{ 3, GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE },
+            width_{ 0 },
+            height_{ 0 } {
+        auto fullFilename = texFilename.generic_string();
+
+        stbi_set_flip_vertically_on_load(1);
+
+        // Bind Texture and Set Filtering Levels
+        glGenTextures(1, &textureId_);
+        glBindTexture(GL_TEXTURE_2D, textureId_);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        if (stbi_is_hdr(fullFilename.c_str()) != 0) LoadTextureHDR(fullFilename);
+        else LoadTextureLDR(fullFilename, useSRGB);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+        /**
+         *  Move-constructor.
+         *  @param rhs the object to copy.
+         */
     Texture::Texture(Texture&& rhs) noexcept :
         Resource(std::move(rhs)),
         textureId_{ std::move(rhs.textureId_) },
@@ -158,4 +181,5 @@ namespace viscom {
         }
         return std::make_tuple(bytesPP, internalFmt, fmt);
     }
+
 }

@@ -10,7 +10,8 @@
 
 #include "core/resources/Resource.h"
 #include "core/open_gl_fwd.h"
-
+#include <experimental/filesystem>
+#include "core/gfx/Shader.h"
 namespace viscom {
 
     class ApplicationNodeInternal;
@@ -19,6 +20,7 @@ namespace viscom {
     /**
      * Complete GPU program with multiple Shader objects working together.
      */
+     namespace fs = std::experimental::filesystem;
     class GPUProgram final : Resource
     {
     public:
@@ -26,6 +28,7 @@ namespace viscom {
         GPUProgram(const std::string& programName, ApplicationNodeInternal* node, std::initializer_list<std::string> shaderNames);
         GPUProgram(const std::string& programName, ApplicationNodeInternal* node, std::vector<std::string> shaderNames);
         GPUProgram(const std::string& programName, ApplicationNodeInternal* node, std::vector<std::string> shaderNames, const std::vector<std::string>& defines);
+        GPUProgram(std::string programName_, ApplicationNodeInternal *node, std::vector<std::unique_ptr<Shader>> shaders);
         GPUProgram(const GPUProgram& orig) = delete;
         GPUProgram& operator=(const GPUProgram&) = delete;
         GPUProgram(GPUProgram&&) noexcept;
@@ -35,6 +38,8 @@ namespace viscom {
         void recompileProgram();
         /** Returns the OpenGL program id. */
         GLuint getProgramId() const noexcept { return program_; }
+        std::string getProgramName() const noexcept { return programName_;}
+        const std::vector<std::string>& getShaderNames() {return shaderNames_;};
         /** Returns a uniform locations. */
         GLint getUniformLocation(const std::string& name) const;
         /** Returns a list of uniform locations. */
@@ -64,8 +69,14 @@ namespace viscom {
         std::vector<std::string> defines_;
 
         void unload() noexcept;
+
+    public:
         template<typename T, typename SHAcc> static GLuint linkNewProgram(const std::string& name,
             const std::vector<T>& shaders, SHAcc shaderAccessor);
         static void releaseShaders(const std::vector<GLuint>& shaders) noexcept;
+
+    public:
+        ShaderList::const_iterator shaders_begin() const { return shaders_.cbegin();}
+        ShaderList::const_iterator shaders_end() const { return shaders_.cend();}
     };
 }
