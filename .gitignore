@@ -9,3 +9,5 @@ resources/shader/**/*.gen
 resources/**/*.viscombin
 
 !resources/**/*.obj
+
+extern/sgct
