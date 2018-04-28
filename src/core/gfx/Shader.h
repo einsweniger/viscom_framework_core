@@ -55,6 +55,8 @@ namespace viscom {
         GLuint getShaderId() const noexcept { return shader_; }
         void resetShader(GLuint newShader);
         GLuint recompileShader() const;
+        GLenum GetType() const { return type_;}
+        const std::string& GetFileName() const {return filename_;}
 
     private:
         /** Holds the shader file name. */

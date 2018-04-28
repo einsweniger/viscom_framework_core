@@ -43,8 +43,8 @@ namespace viscom {
         }
         ifs.close();
 
-        config.resourceSearchPaths_.emplace_back(config.baseDirectory_ + "extern/fwcore/resources/");
         config.resourceSearchPaths_.emplace_back(config.baseDirectory_ + "resources/");
+        config.resourceSearchPaths_.emplace_back(config.baseDirectory_ + "extern/fwcore/resources/");
 
         return config;
     }

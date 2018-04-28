@@ -35,6 +35,8 @@ namespace viscom {
         void recompileProgram();
         /** Returns the OpenGL program id. */
         GLuint getProgramId() const noexcept { return program_; }
+        /** Returns the Program name */
+        const std::string& GetProgramName() const noexcept { return programName_;}
         /** Returns a uniform locations. */
         GLint getUniformLocation(const std::string& name) const;
         /** Returns a list of uniform locations. */
@@ -49,6 +51,7 @@ namespace viscom {
         std::vector<GLint> getAttributeLocations(const std::initializer_list<std::string>& names) const;
         std::vector<GLint> GetAttributeLocations(const std::vector<std::string>& names) const;
 
+        const std::vector<std::unique_ptr<Shader>>& GetShaders() const noexcept {return shaders_;}
     private:
         using ShaderList = std::vector<std::unique_ptr<Shader>>;
 

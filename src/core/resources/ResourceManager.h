@@ -111,6 +111,9 @@ namespace viscom {
             return (rit != resources_.end()) && !rit->expired();
         }
 
+        typename ResourceMap::const_iterator cbegin() { return resources_.cbegin();}
+        typename ResourceMap::const_iterator cend() { return resources_.cend();}
+        const ResourceMap& getMap() { return resources_;}
 
     protected:
         template<typename... Args>
