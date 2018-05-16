@@ -295,8 +295,8 @@ namespace viscom {
     {
         auto window = GetEngine()->getCurrentWindowPtr();
 
-        if constexpr (SHOW_CLIENT_GUI) ImGui_ImplGlfwGL3_NewFrame(-GetViewportScreen(window->getId()).position_, GetViewportScreen(window->getId()).size_, GetViewportScaling(window->getId()), GetCurrentAppTime(), GetElapsedTime());
-        else if (engine_->isMaster()) ImGui_ImplGlfwGL3_NewFrame(-GetViewportScreen(window->getId()).position_, GetViewportScreen(window->getId()).size_, GetViewportScaling(window->getId()), GetCurrentAppTime(), GetElapsedTime());
+        if constexpr (SHOW_CLIENT_GUI) ImGui_ImplGlfwGL3_NewFrame();
+        else if (engine_->isMaster()) ImGui_ImplGlfwGL3_NewFrame();
 
         auto& fbo = framebuffers_[GetEngine()->getCurrentWindowIndex()];
         appNodeImpl_->Draw2D(fbo);
@@ -313,8 +313,8 @@ namespace viscom {
     void ApplicationNodeInternal::BasePostDraw()
     {
         appNodeImpl_->PostDraw();
-        if constexpr (SHOW_CLIENT_GUI) ImGui_ImplGlfwGL3_FinishAllFrames();
-        else if (engine_->isMaster()) ImGui_ImplGlfwGL3_FinishAllFrames();
+//        if constexpr (SHOW_CLIENT_GUI) ImGui_ImplGlfwGL3_FinishAllFrames();
+//        else if (engine_->isMaster()) ImGui_ImplGlfwGL3_FinishAllFrames();
     }
 
     void ApplicationNodeInternal::BaseCleanUp()
@@ -355,7 +355,7 @@ namespace viscom {
 #endif
 
             if constexpr (!SHOW_CLIENT_GUI) {
-                ImGui_ImplGlfwGL3_KeyCallback(key, scancode, action, mods);
+                ImGui_ImplGlfw_KeyCallback(GetEngine()->getCurrentWindowPtr()->getWindowHandle(),key, scancode, action, mods);
                 if (ImGui::GetIO().WantCaptureKeyboard) return;
             }
 
@@ -372,7 +372,7 @@ namespace viscom {
 #endif
 
             if constexpr (!SHOW_CLIENT_GUI) {
-                ImGui_ImplGlfwGL3_CharCallback(character);
+                ImGui_ImplGlfw_CharCallback(GetEngine()->getCurrentWindowPtr()->getWindowHandle(), character);
                 if (ImGui::GetIO().WantCaptureKeyboard) return;
             }
 
@@ -391,7 +391,7 @@ namespace viscom {
 #endif
 
             if constexpr (!SHOW_CLIENT_GUI) {
-                ImGui_ImplGlfwGL3_MouseButtonCallback(button, action, 0);
+                ImGui_ImplGlfw_MouseButtonCallback(GetEngine()->getCurrentWindowPtr()->getWindowHandle(), button, action, 0);
                 if (ImGui::GetIO().WantCaptureMouse) return;
             }
 
@@ -423,7 +423,6 @@ namespace viscom {
 #endif
 
             if constexpr (!SHOW_CLIENT_GUI) {
-                ImGui_ImplGlfwGL3_MousePositionCallback(mousePos.x, mousePos.y);
                 if (ImGui::GetIO().WantCaptureMouse) return;
             }
 
@@ -440,7 +439,7 @@ namespace viscom {
 #endif
 
             if constexpr (!SHOW_CLIENT_GUI) {
-                ImGui_ImplGlfwGL3_ScrollCallback(xoffset, yoffset);
+                ImGui_ImplGlfw_ScrollCallback(GetEngine()->getCurrentWindowPtr()->getWindowHandle(), xoffset, yoffset);
                 if (ImGui::GetIO().WantCaptureMouse) return;
             }
 

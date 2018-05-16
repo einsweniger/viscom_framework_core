@@ -7,9 +7,9 @@
  */
 
 #include "ApplicationNodeBase.h"
-#include "core/imgui/imgui_impl_glfw_gl3.h"
 #include "core/open_gl.h"
 #include <imgui.h>
+#include "core/imgui/imgui_impl_glfw_gl3.h"
 
 namespace viscom {
 
@@ -97,46 +97,45 @@ namespace viscom {
     // ReSharper disable CppParameterNeverUsed
     bool ApplicationNodeBase::KeyboardCallback(int key, int scancode, int action, int mods)
     {
-        if constexpr (SHOW_CLIENT_GUI) {
-            ImGui_ImplGlfwGL3_KeyCallback(key, scancode, action, mods);
+#ifdef SHOW_CLIENT_GUI
+            ImGui_ImplGlfw_KeyCallback(GetApplication()->GetEngine()->getCurrentWindowPtr()->getWindowHandle(), key, scancode, action, mods);
             if (ImGui::GetIO().WantCaptureKeyboard) return true;
-        }
+#endif
         return false;
     }
 
     bool ApplicationNodeBase::CharCallback(unsigned int character, int mods)
     {
-        if constexpr (SHOW_CLIENT_GUI) {
-            ImGui_ImplGlfwGL3_CharCallback(character);
+#ifdef SHOW_CLIENT_GUI
+            ImGui_ImplGlfw_CharCallback(GetApplication()->GetEngine()->getCurrentWindowPtr()->getWindowHandle(), character);
             if (ImGui::GetIO().WantCaptureKeyboard) return true;
-        }
+#endif
         return false;
     }
 
     bool ApplicationNodeBase::MouseButtonCallback(int button, int action)
     {
-        if constexpr (SHOW_CLIENT_GUI) {
-            ImGui_ImplGlfwGL3_MouseButtonCallback(button, action, 0);
+#ifdef SHOW_CLIENT_GUI
+            ImGui_ImplGlfw_MouseButtonCallback(GetApplication()->GetEngine()->getCurrentWindowPtr()->getWindowHandle(), button, action, 0);
             if (ImGui::GetIO().WantCaptureMouse) return true;
-        }
+#endif
         return false;
     }
 
     bool ApplicationNodeBase::MousePosCallback(double x, double y)
     {
-        if constexpr (SHOW_CLIENT_GUI) {
-            ImGui_ImplGlfwGL3_MousePositionCallback(x, y);
+#ifdef SHOW_CLIENT_GUI
             if (ImGui::GetIO().WantCaptureMouse) return true;
-        }
+#endif
         return false;
     }
 
     bool ApplicationNodeBase::MouseScrollCallback(double xoffset, double yoffset)
     {
-        if constexpr (SHOW_CLIENT_GUI) {
-            ImGui_ImplGlfwGL3_ScrollCallback(xoffset, yoffset);
+#ifdef SHOW_CLIENT_GUI
+            ImGui_ImplGlfw_ScrollCallback(GetApplication()->GetEngine()->getCurrentWindowPtr()->getWindowHandle(), xoffset, yoffset);
             if (ImGui::GetIO().WantCaptureMouse) return true;
-        }
+#endif
         return false;
     }
 

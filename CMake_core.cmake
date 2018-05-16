@@ -31,7 +31,7 @@ set(VISCOM_INSTALL_BASE_PATH "D:/LabShare/cluster/apps/" CACHE PATH "Path to ins
 set(VISCOM_OPENGL_PROFILE "3.3" CACHE STRING "OpenGL profile version to use.")
 # This could be changed to "off" if the default target doesn't need the tuio library
 set(VISCOM_USE_TUIO ON CACHE BOOL "Use TUIO input library")
-set(VISCOM_TUIO_PORT 3333 CACHE STRING "UDP Port for TUIO to listen on")
+set(TUIO_PORT 3333 CACHE STRING "UDP Port for TUIO to listen on")
 
 # Build-flags.
 if(UNIX)
@@ -108,10 +108,13 @@ if (${VISCOM_USE_SGCT})
     set(SGCT_LIBS
         debug ${SGCT_DEBUG_LIBRARY}
         optimized ${SGCT_RELEASE_LIBRARY})
-
-    list(APPEND CORE_LIBS ${SGCT_LIBS} ${OPENGL_LIBRARY} ws2_32)
+    list(APPEND CORE_LIBS ${SGCT_LIBS} ${OPENGL_LIBRARY})
+    if(MSVC)
+        list(APPEND CORE_LIBS ws2_32)
+    endif()
     list(APPEND CORE_INCLUDE_DIRS ${SGCT_INCLUDE_DIRECTORY})
 else()
+    set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL REQUIRED)
     list(APPEND CORE_LIBS glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
     list(APPEND CORE_INCLUDE_DIRS extern/fwcore/extern/glm extern/fwcore/extern/glfw/include)
