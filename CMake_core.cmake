@@ -108,8 +108,23 @@ if (${VISCOM_USE_SGCT})
     set(SGCT_LIBS
         debug ${SGCT_DEBUG_LIBRARY}
         optimized ${SGCT_RELEASE_LIBRARY})
-
-    list(APPEND CORE_LIBS ${SGCT_LIBS} ${OPENGL_LIBRARY} ws2_32)
+		if(UNIX) 
+			list(APPEND CORE_LIBS
+                stdc++fs
+                Xext
+                X11
+                Xrandr
+                Xinerama
+                Xxf86vm
+                Xcursor
+                ${CMAKE_THREAD_LIBS_INIT}
+                dl
+            )
+		endif()
+    list(APPEND CORE_LIBS ${SGCT_LIBS} ${OPENGL_LIBRARY})
+    if(MSVC)
+        list(APPEND CORE_LIBS ws2_32)
+    endif()
     list(APPEND CORE_INCLUDE_DIRS ${SGCT_INCLUDE_DIRECTORY})
 else()
     find_package(OpenGL REQUIRED)
