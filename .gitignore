@@ -11,3 +11,5 @@ resources/**/*.viscombin
 !resources/**/*.obj
 
 extern/sgct
+extern/sgct-2.8.0
+.idea/*
