@@ -107,7 +107,7 @@ namespace viscom {
         GPUProgramManager& GetGPUProgramManager() { return gpuProgramManager_; }
         TextureManager& GetTextureManager() { return textureManager_; }
         MeshManager& GetMeshManager() { return meshManager_; }
-
+        const int GetCurrentWindowIndex();
     private:
         glm::dvec2 ConvertInputCoordinatesLocalToGlobal(const glm::dvec2& p);
 

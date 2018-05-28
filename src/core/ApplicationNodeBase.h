@@ -90,9 +90,9 @@ namespace viscom {
         const FrameBuffer* SelectOffscreenBuffer(const std::vector<FrameBuffer>& offscreenBuffers) const { return appNode_->SelectOffscreenBuffer(offscreenBuffers); }
         std::unique_ptr<FullscreenQuad> CreateFullscreenQuad(const std::string& fragmentShader) { return appNode_->CreateFullscreenQuad(fragmentShader); }
 
+        ApplicationNodeInternal* GetApplication() const { return appNode_; }
     protected:
         const FWConfiguration& GetConfig() const { return appNode_->GetConfig(); }
-        ApplicationNodeInternal* GetApplication() const { return appNode_; }
 
         const Viewport& GetViewportScreen(size_t windowId) const { return appNode_->GetViewportScreen(windowId); }
         Viewport& GetViewportScreen(size_t windowId) { return appNode_->GetViewportScreen(windowId); }

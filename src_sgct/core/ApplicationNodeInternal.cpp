@@ -584,6 +584,12 @@ namespace viscom {
         return std::make_unique<FullscreenQuad>(fragmentShader, this);
     }
 
+    const int ApplicationNodeInternal::GetCurrentWindowIndex() {
+        auto idx = GetEngine()->getCurrentWindowIndex();
+        auto id = engine_->getCurrentWindowPtr()->getId();
+        return id;
+    }
+
 #ifndef VISCOM_LOCAL_ONLY
     void ApplicationNodeInternal::loadProperties()
     {
