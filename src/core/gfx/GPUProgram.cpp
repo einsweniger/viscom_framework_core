@@ -106,7 +106,8 @@ namespace viscom {
      */
     void GPUProgram::recompileProgram()
     {
-        Load(std::optional<std::vector<std::uint8_t>>());
+        std::optional<std::vector<std::uint8_t>> tmp{};
+        Load(tmp);
     }
 
     GLint GPUProgram::getUniformLocation(const std::string& name) const

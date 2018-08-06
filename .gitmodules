@@ -20,3 +20,7 @@ url=https://github.com/assimp/assimp.git
 [submodule "extern/glfw"]
 	path = extern/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "extern/sgct"]
+	path = extern/sgct
+	url = git@github.com:einsweniger/sgct.git
+	branch = linux-fixes
